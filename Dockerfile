@@ -54,8 +54,8 @@ RUN \
     && sed -i "s/listen.owner = www-data/listen.owner = root/g" /etc/php5/fpm/pool.d/www.conf \
     && sed -i "s/listen.group = www-data/listen.group = root/g" /etc/php5/fpm/pool.d/www.conf \
     && sed -i "s/pm.max_children = 5/pm.max_children = 50/g" /etc/php5/fpm/pool.d/www.conf \
-    && sed -i "s/pm.start_servers = 2/pm.start_servers = 10/g" /etc/php5/fpm/pool.d/www.conf \
-    && sed -i "s/pm.max_spare_servers = 3/pm.max_spare_servers = 15/g" /etc/php5/fpm/pool.d/www.conf
+    && sed -i "s/pm = dynamic/pm = ondemand/g" /etc/php5/fpm/pool.d/www.conf \
+    && sed -i "s/;pm.process_idle_timeout = 10s;/pm.process_idle_timeout = 10s;/g" /etc/php5/fpm/pool.d/www.conf
 
 # Clear cache
 RUN \
