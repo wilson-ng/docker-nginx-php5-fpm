@@ -270,30 +270,6 @@ server {
     listen 80;
     server_name $DOMAIN_NAME;
     root $DOMAIN_PATH;
-    index index.php;
-
-    location / {
-        # try to serve file directly, fallback to index.php
-        try_files \$uri /index.php\$is_args\$args;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-
-    location ~ \.php\$ {
-        fastcgi_keep_conn on;
-        fastcgi_pass upstream;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
-        fastcgi_param DOCUMENT_ROOT \$realpath_root;
-
-        include fastcgi_params;
-    }
-server {
-    listen 80;
-    server_name $DOMAIN_NAME;
-    root $DOMAIN_PATH;
 
     index index.php index.html; # Letting nginx know which files to try when requesting a folder
 
