@@ -264,8 +264,101 @@ server {
     }
 }
 END
+    elif [ $DOMAIN_TYPE = "prestashop" ]; then
+        cat > "$CONF_DIR/$DOMAIN_NAME.conf" <<END
+server {
+    listen 80;
+    server_name $DOMAIN_NAME;
+    root $DOMAIN_PATH;
+    index index.php;
+
+    location / {
+        # try to serve file directly, fallback to index.php
+        try_files \$uri /index.php\$is_args\$args;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location ~ \.php\$ {
+        fastcgi_keep_conn on;
+        fastcgi_pass upstream;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT \$realpath_root;
+
+        include fastcgi_params;
+    }
+server {
+    listen 80;
+    server_name $DOMAIN_NAME;
+    root $DOMAIN_PATH;
+
+    index index.php index.html; # Letting nginx know which files to try when requesting a folder
+
+
+    location = /favicon.ico {
+        log_not_found off;      # PrestaShop by default does not provide a favicon.ico
+        access_log off;         # Disable logging to prevent excessive log sizes
+    }
+
+
+     location = /robots.txt {
+         auth_basic off;        # Whatever happens, always let bots know about your policy
+         allow all;
+         log_not_found off;     # Prevent excessive log size
+         access_log off;
+    }
+
+    # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    ##
+    # Gzip Settings
+    ##
+
+    gzip on;
+    gzip_disable "msie6";                                             # Do people still use Internet Explorer 6? In that case, disable gzip and hope for the best!
+    gzip_vary on;                                                     # Also compress content with other MIME types than "text/html"
+    gzip_types application/json text/css application/javascript;      # We only want to compress json, css and js. Compressing images and such isn't worth it
+    gzip_proxied any;
+    gzip_comp_level 6;                                                # Set desired compression ratio, higher is better compression, but slower
+    gzip_buffers 16 8k;                                               # Gzip buffer size
+    gzip_http_version 1.0;                                            # Compress every type of HTTP request
+
+    rewrite ^/api/?(.*)$ /webservice/dispatcher.php?url=$1 last;
+    rewrite ^/([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$1$2.jpg last;
+    rewrite ^/([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$1$2$3.jpg last;
+    rewrite ^/([0-9])([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$3/$1$2$3$4.jpg last;
+    rewrite ^/([0-9])([0-9])([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$3/$4/$1$2$3$4$5.jpg last;
+    rewrite ^/([0-9])([0-9])([0-9])([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$3/$4/$5/$1$2$3$4$5$6.jpg last;
+    rewrite ^/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$3/$4/$5/$6/$1$2$3$4$5$6$7.jpg last;
+    rewrite ^/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$3/$4/$5/$6/$7/$1$2$3$4$5$6$7$8.jpg last;
+    rewrite ^/([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])(-[_a-zA-Z0-9-]*)?(-[0-9]+)?/.+\.jpg$ /img/p/$1/$2/$3/$4/$5/$6/$7/$8/$1$2$3$4$5$6$7$8$9.jpg last;
+    rewrite ^/c/([0-9]+)(-[_a-zA-Z0-9-]*)(-[0-9]+)?/.+\.jpg$ /img/c/$1$2.jpg last;
+    rewrite ^/c/([a-zA-Z-]+)(-[0-9]+)?/.+\.jpg$ /img/c/$1.jpg last;
+    rewrite ^/([0-9]+)(-[_a-zA-Z0-9-]*)(-[0-9]+)?/.+\.jpg$ /img/c/$1$2.jpg last;
+    try_files $uri $uri/ /index.php?$args;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_keep_conn on;
+        fastcgi_pass upstream;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT \$realpath_root;
+
+        include fastcgi_params;
+    }
+}
+END
     else
-        echo "Invalid type DOMAIN_$count = $DOMAIN_TYPE, available type (php|static|symfony|rewrite_index)" >&2
+        echo "Invalid type DOMAIN_$count = $DOMAIN_TYPE, available type (php|static|symfony|rewrite_index|prestashop)" >&2
     fi
 
 done
