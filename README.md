@@ -1,4 +1,8 @@
 # Docker Nginx with PHP5 FPM
+
+[![](https://images.microbadger.com/badges/image/wilsonng/nginx-php5-fpm.svg)](https://microbadger.com/images/wilsonng/nginx-php5-fpm "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/wilsonng/nginx-php5-fpm.svg)](https://microbadger.com/images/wilsonng/nginx-php5-fpm "Get your own version badge on microbadger.com")
+
 Installed Packages:
 
 - curl, wget, vim, apt-utils
