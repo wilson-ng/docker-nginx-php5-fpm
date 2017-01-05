@@ -47,7 +47,7 @@ RUN \
     && sed -i "s/upload_max_filesize =.*/upload_max_filesize = 250M/g" /etc/php5/fpm/php.ini \
     && sed -i "s/memory_limit = 128M/memory_limit = 385M/g" /etc/php5/fpm/php.ini \
     && sed -i "s/post_max_size =.*/post_max_size = 250M/g" /etc/php5/fpm/php.ini \
-    && sed -i "s/;security.limit_extensions = .php .php3 .php4 .php/security.limit_extensions =/g" /etc/php5/fpm/pool.d/www.conf \
+    && sed -i "s/;security.limit_extensions = .php .php3 .php4 .php5/security.limit_extensions =/g" /etc/php5/fpm/pool.d/www.conf \
     && sed -i "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php5-fpm.sock/g" /etc/php5/fpm/pool.d/www.conf \
     && sed -i "s/user = www-data/user = root/g" /etc/php5/fpm/pool.d/www.conf \
     && sed -i "s/group = www-data/group = root/g" /etc/php5/fpm/pool.d/www.conf \
