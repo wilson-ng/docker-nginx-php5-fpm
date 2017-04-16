@@ -39,6 +39,16 @@ RUN \
         php5-xmlrpc \
         php-pclzip
 
+# NodeJS and NPM
+RUN \
+    curl -sL https://deb.nodesource.com/setup_7.x | bash - \
+    && apt-get install -y nodejs jpegoptim \
+    && npm install -g npm \
+    && npm install -g bower \
+    && npm install -g gulp \
+    && echo '{ "allow_root": true }' > ~/.bowerrc
+
+
 # Configuration of php5 fpm and nginx
 RUN \
     echo "Asia/Jakarta" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata \

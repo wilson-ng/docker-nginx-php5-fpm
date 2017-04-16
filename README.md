@@ -7,6 +7,7 @@ Installed Packages:
 
 - curl, wget, vim, apt-utils
 - nginx, php5
+- npm, bower, gulp
 
 Configured as:
 
