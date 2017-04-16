@@ -40,9 +40,7 @@ RUN \
         php-pclzip
 
 # NodeJS and NPM
-RUN \
-    curl -sL https://deb.nodesource.com/setup_7.x | bash - \
-    && apt-get install -y nodejs jpegoptim \
+RUN apt-get install -y npm jpegoptim \
     && npm install -g npm \
     && npm install -g bower \
     && npm install -g gulp \
