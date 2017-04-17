@@ -5,7 +5,7 @@
 
 Installed Packages:
 
-- curl, wget, vim, apt-utils
+- curl, wget, vim, apt-utils, git
 - nginx, php5
 - npm, bower, gulp
 

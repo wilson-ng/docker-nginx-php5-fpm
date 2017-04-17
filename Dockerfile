@@ -13,7 +13,7 @@ WORKDIR /home/projects
 RUN \
     apt-get update \
     && apt-get install -y --force-yes --no-install-recommends \
-        curl wget vim apt-utils
+        curl wget vim apt-utils git ca-certificates
 
 # Install nginx & php5 fpm
 RUN \
@@ -39,10 +39,11 @@ RUN \
         php5-xmlrpc \
         php-pclzip
 
-# NodeJS and NPM
-RUN apt-get install -y npm jpegoptim \
-    && npm install -g npm \
-    && npm install -g bower \
+RUN \
+    curl -kL https://deb.nodesource.com/setup_7.x | bash - && apt-get install -y nodejs
+
+RUN \
+    npm install -g bower \
     && npm install -g gulp \
     && echo '{ "allow_root": true }' > ~/.bowerrc
 
